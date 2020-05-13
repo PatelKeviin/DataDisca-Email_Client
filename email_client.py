@@ -22,6 +22,7 @@ class EmailClient:
         password (str): Email password
             """
 
+        # Email credentials
         self.__server = server
         self.__server_port = server_port
         self.__user_name = user_name
@@ -32,6 +33,12 @@ class EmailClient:
         # add sender's info
         self.__email_content['From'] = user_name
 
+        # necessary for internal workings
+        self.__is_subject_added = False
+        self.__is_body_added = False
+        self.__is_attached = False
+        self.__is_signature_added = False
+
     def set_subject(self, subject: str):
         """ Method to set subject for the email (optional).
 
@@ -39,8 +46,9 @@ class EmailClient:
         subject (str): Email subject to set
             """
 
-        self.__email_content['Subject'] = subject
-        self.__is_subject_added = True
+        self.__is_subject_added = (subject != None and subject != '')
+        if self.__is_subject_added:
+            self.__email_content['Subject'] = subject
 
     def set_body(self, body: str):
         """ Method to set body for the email (optional).
@@ -49,8 +57,9 @@ class EmailClient:
         body (str): Email body to set
             """
 
-        self.__email_content.attach(MIMEText(body, 'plain'))
-        self.__is_body_added = True
+        self.__is_body_added = (body != None and body != '')
+        if self.__is_body_added:
+            self.__email_content.attach(MIMEText(body, 'plain'))
 
     def set_signature(self, signature: str):
         """ Method to set signature for the email (optional).
@@ -59,8 +68,9 @@ class EmailClient:
         signature (str): Email signature to set
             """
 
-        self.__email_content.attach(MIMEText(signature, 'plain'))
-        self.__is_signature_added = True
+        self.__is_signature_added = (signature != None and signature != '')
+        if self.__is_signature_added:
+            self.__email_content.attach(MIMEText(signature, 'plain'))
 
     def add_attachment(self, attachment_path: str):
         """ Method to attach attachments in the email (optional).
@@ -132,9 +142,14 @@ class EmailClient:
         # add sender's info
         self.__email_content['From'] = self.__user_name
 
+        # necessary for internal workings
+        self.__is_subject_added = False
+        self.__is_body_added = False
+        self.__is_attached = False
+        self.__is_signature_added = False
+
 
 if __name__ == "__main__":
-
     # using Google mail server
     server = 'smtp.gmail.com'
     port_number = 587
@@ -144,7 +159,7 @@ if __name__ == "__main__":
     with open('password.txt', 'r') as pass_file:
         password = pass_file.read()
     # recipient's email addr
-    recipient = 'khushbup1010@gmail.com'
+    recipient = 'kevin.patel@ai.datadisca.com'
 
     # Email message content
     # linux command for creating text files for processer and memory usage each
