@@ -23,7 +23,7 @@ class EmailClient:
             """
 
         # Email credentials
-        self.__user_name = user_name
+        self.user_name = user_name
         self.__password = password
 
         # used to add plain texts/HTML parts in the email
@@ -117,7 +117,7 @@ class EmailClient:
         try:
             self.__mail_server.starttls()   # start a secure TLS connection
             # login with user credentials on email server
-            self.__mail_server.login(self.__user_name, self.__password)
+            self.__mail_server.login(self.user_name, self.__password)
 
             # send email message
             self.__mail_server.send_message(self.__email_content)
@@ -138,7 +138,7 @@ class EmailClient:
         # used to add plain texts/HTML parts in the email
         self.__email_content = MIMEMultipart()
         # add sender's info
-        self.__email_content['From'] = self.__user_name
+        self.__email_content['From'] = self.user_name
 
         # necessary for internal workings
         self.__is_subject_added = False
