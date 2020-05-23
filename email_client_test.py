@@ -5,13 +5,13 @@ import unittest
 class EmailClientTest(unittest.TestCase):
     """ Tests for EmailClient class
         """
+
     # credentials
     # using Google mail server
     __server = 'smtp.gmail.com'
     __port_number = 587
     # sender's credentials
     __username = 'kevinmanojpatel@gmail.com'
-    __password = ''
     with open('password.txt', 'r') as pass_file:
         __password = pass_file.read()
     # recipient's email addr
@@ -64,11 +64,11 @@ class EmailClientTest(unittest.TestCase):
     def test_email_client_reset(self):
         # Email message content
         # Email subject
-        subject = 'Testing'
+        subject = 'Testing Reset Method'
         # Email body
-        body = 'Hi,\n\nI am Kevin. How are you?'
+        body = 'Email body has not been reset. Please check its functionality.'
         # Email signature
-        signature = '\n\nKind regards,\nkevin.patel@ai.datadisca.com'
+        signature = '\n\nKind regards,\nkevinmanojpatel@gmail.com'
 
         # initialising Email
         email_client = EmailClient(

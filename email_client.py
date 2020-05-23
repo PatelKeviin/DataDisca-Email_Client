@@ -23,8 +23,6 @@ class EmailClient:
             """
 
         # Email credentials
-        self.__server = server
-        self.__server_port = server_port
         self.__user_name = user_name
         self.__password = password
 
@@ -32,6 +30,9 @@ class EmailClient:
         self.__email_content = MIMEMultipart()
         # add sender's info
         self.__email_content['From'] = user_name
+        # uses SMTP email protocol to communicate with email service provider
+        self.__mail_server = smtplib.SMTP(
+            host=server, port=server_port)
 
         # necessary for internal workings
         self.__is_subject_added = False
@@ -46,7 +47,7 @@ class EmailClient:
         subject (str): Email subject to set
             """
 
-        self.__is_subject_added = (subject != None and subject != '')
+        self.__is_subject_added = (subject is not None and subject != '')
         if self.__is_subject_added:
             self.__email_content['Subject'] = subject
 
@@ -57,7 +58,7 @@ class EmailClient:
         body (str): Email body to set
             """
 
-        self.__is_body_added = (body != None and body != '')
+        self.__is_body_added = (body is not None and body != '')
         if self.__is_body_added:
             self.__email_content.attach(MIMEText(body, 'plain'))
 
@@ -68,7 +69,7 @@ class EmailClient:
         signature (str): Email signature to set
             """
 
-        self.__is_signature_added = (signature != None and signature != '')
+        self.__is_signature_added = (signature is not None and signature != '')
         if self.__is_signature_added:
             self.__email_content.attach(MIMEText(signature, 'plain'))
 
@@ -114,9 +115,6 @@ class EmailClient:
         self.__email_content['Date'] = formatdate(localtime=True)
 
         try:
-            # uses SMTP email protocol to communicate with email service provider
-            self.__mail_server = smtplib.SMTP(
-                host=self.__server, port=self.__server_port)
             self.__mail_server.starttls()   # start a secure TLS connection
             # login with user credentials on email server
             self.__mail_server.login(self.__user_name, self.__password)
@@ -151,49 +149,48 @@ class EmailClient:
 
 if __name__ == "__main__":
     # using Google mail server
-    server = 'smtp.gmail.com'
+    mail_server = 'smtp.gmail.com'
     port_number = 587
     # sender's credentials
-    username = 'kevinmanojpatel@gmail.com'
-    password = ''
+    username = 'khushbup1010@gmail.com'
     with open('password.txt', 'r') as pass_file:
-        password = pass_file.read()
+        email_password = pass_file.read()
     # recipient's email addr
-    recipient = 'kevin.patel@ai.datadisca.com'
+    email_recipient = 'kevin.patel@ai.datadisca.com'
 
     # Email message content
-    # linux command for creating text files for processer and memory usage each
+    # linux command for creating text files for processor and memory usage each
     os.system('cat /proc/cpuinfo >> processor.txt')
     os.system('cat /proc/meminfo >> memory.txt')
     # linux command for creating a text file for running processes
     os.system('ps -aux >> running_process.txt')
 
     # Email subject
-    subject = 'Server Performance'
+    email_subject = 'Server Performance'
 
     # Email body
-    body = '-------------- CPU INFO --------------\n'
-    with open('processor.txt', 'r') as file:
-        for line in file.readlines():
-            body += line
+    email_body = '-------------- CPU INFO --------------\n'
+    with open('processor.txt', 'r') as processor_file:
+        for line in processor_file.readlines():
+            email_body += line
 
-    body += '------------ MEMORY INFO ------------\n'
-    with open('memory.txt') as file:
-        for line in file.readlines():
-            body += line
+    email_body += '------------ MEMORY INFO ------------\n'
+    with open('memory.txt') as memory_file:
+        for line in memory_file.readlines():
+            email_body += line
 
     # Email signature
-    signature = '\n\nKind regards,\nkevin.patel@ai.datadisca.com'
+    email_signature = '\n\nKind regards,\nkevinmanojpatel@gmail.com'
 
     # using 'EmailClient' class for sending email messages
-    email_client = EmailClient(server, port_number, username, password)
-    email_client.set_subject(subject)
-    email_client.set_body(body)
-    email_client.set_signature(signature)
+    email_client = EmailClient(mail_server, port_number, username, email_password)
+    email_client.set_subject(email_subject)
+    email_client.set_body(email_body)
+    email_client.set_signature(email_signature)
     email_client.add_attachment('running_process.txt')
 
     # sending email
-    if email_client.send(recipient):
+    if email_client.send(email_recipient):
         print('Email sent.')
     else:
         print('Failed :(')
